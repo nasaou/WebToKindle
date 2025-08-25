@@ -4,7 +4,85 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>WebToKindle - Send Articles to Your Kindle</title>
-		<link rel="stylesheet" href="/styles.css" />
+		<style>
+/* Reset and base styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	min-height: 100vh;
+	color: #ffffff;
+	overflow-x: hidden;
+}
+
+/* Dark animated gradient background */
+.gradient-background {
+	position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+	background: linear-gradient(135deg,#0f0f23 0%,#1a1a3a 25%,#2d1b69 50%,#1e1e3f 75%,#0f0f23 100%);
+	background-size: 400% 400%;
+	animation: gradientShift 15s ease infinite;
+	z-index: -2;
+}
+
+@keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+/* Floating orbs for depth */
+.orb { position: fixed; border-radius: 50%; background: radial-gradient(circle, rgba(99,102,241,.3) 0%, rgba(139,92,246,.1) 70%); filter: blur(40px); animation: float 20s infinite ease-in-out; z-index: -1; }
+.orb-1 { width:300px; height:300px; top:10%; left:-10%; animation-delay:0s; }
+.orb-2 { width:200px; height:200px; top:60%; right:-5%; animation-delay:-7s; }
+.orb-3 { width:150px; height:150px; bottom:20%; left:20%; animation-delay:-14s; }
+@keyframes float { 0%,100%{transform:translateY(0) rotate(0)} 33%{transform:translateY(-30px) rotate(120deg)} 66%{transform:translateY(30px) rotate(240deg)} }
+
+/* Layout */
+.container { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+.split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1200px; width: 100%; align-items: center; }
+.branding { display: flex; flex-direction: column; align-items: flex-start; }
+.logo { display: flex; align-items: center; margin-bottom: 2rem; }
+.logo-icon { width:3rem; height:3rem; margin-right:1rem; background: linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 32px rgba(99,102,241,.3); }
+.logo-text { font-size:1.75rem; font-weight:700; background: linear-gradient(135deg,#fff,#a5b4fc); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.brand-title { font-size:2.5rem; font-weight:800; line-height:1.2; margin-bottom:1rem; background: linear-gradient(135deg,#fff,#e0e7ff); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.brand-subtitle { font-size:1.125rem; color:#a5b4fc; line-height:1.6; margin-bottom:2rem; font-weight:400; }
+
+/* Glass form */
+.glass-form { background: rgba(255,255,255,.08); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border:1px solid rgba(255,255,255,.15); border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.2); padding:2.5rem; position:relative; overflow:hidden; transition:all .3s cubic-bezier(.4,0,.2,1); }
+.glass-form:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.25); transform: translateY(-2px); box-shadow:0 12px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.3); }
+.glass-form::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent); }
+.form-title { font-size:1.5rem; font-weight:700; margin-bottom:.5rem; color:#fff; }
+.form-subtitle { color:#a5b4fc; margin-bottom:2rem; font-size:.9rem; }
+.input-group { margin-bottom:1.5rem; }
+.input-label { display:block; font-size:.875rem; font-weight:600; color:#e0e7ff; margin-bottom:.5rem; }
+.glass-input { width:100%; padding:1rem; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:12px; color:#fff; font-size:1rem; transition:all .3s ease; backdrop-filter:blur(10px); }
+.glass-input:focus { outline:none; background:rgba(255,255,255,.08); border-color:rgba(99,102,241,.5); box-shadow:0 0 0 3px rgba(99,102,241,.2),0 4px 12px rgba(0,0,0,.2); }
+.glass-input::placeholder { color: rgba(165,180,252,.6); }
+.setup-notice { background: rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2); border-radius:8px; padding:.75rem; margin-top:.5rem; font-size:.75rem; color:#93c5fd; backdrop-filter:blur(10px); }
+.setup-notice a { color:#60a5fa; text-decoration:underline; text-decoration-color:rgba(96,165,250,.4); }
+.setup-notice a:hover { text-decoration-color:#60a5fa; }
+.glass-button { width:100%; padding:1rem; background:linear-gradient(135deg,rgba(99,102,241,.8),rgba(139,92,246,.8)); border:1px solid rgba(255,255,255,.2); border-radius:12px; color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s ease; backdrop-filter:blur(20px); position:relative; overflow:hidden; }
+.glass-button:hover { background:linear-gradient(135deg,rgba(99,102,241,.9),rgba(139,92,246,.9)); transform:translateY(-2px); box-shadow:0 8px 25px rgba(99,102,241,.4),0 4px 12px rgba(0,0,0,.2); }
+.glass-button:active { transform:translateY(0); }
+
+.message { margin-top:1rem; padding:.75rem; border-radius:8px; text-align:center; font-size:.875rem; backdrop-filter:blur(10px); border:1px solid transparent; transition:all .3s ease; }
+.message.success { background:rgba(34,197,94,.1); border-color:rgba(34,197,94,.3); color:#86efac; }
+.message.error { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.3); color:#fca5a5; }
+.message.processing { background:rgba(59,130,246,.1); border-color:rgba(59,130,246,.3); color:#93c5fd; }
+
+.attribution { position:fixed; bottom:1rem; right:1rem; font-size:.75rem; color:rgba(165,180,252,.6); background:rgba(255,255,255,.05); padding:.5rem 1rem; border-radius:20px; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.1); }
+.attribution a { color:#a5b4fc; text-decoration:none; }
+.attribution a:hover { color:#c7d2fe; }
+
+@media (max-width:768px){
+	.split-layout{grid-template-columns:1fr; gap:2rem; text-align:center}
+	.branding{align-items:center}
+	.brand-title{font-size:2rem}
+	.container{padding:1rem}
+	.glass-form{padding:2rem}
+	.attribution{position:relative; bottom:auto; right:auto; margin:2rem auto 0; text-align:center; max-width:fit-content}
+}
+
+.hidden{ display:none; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+.loading{ animation:pulse 2s infinite; }
+		</style>
 	</head>
 	<body>
 		<!-- Animated background -->
@@ -90,6 +168,63 @@
 			>
 		</div>
 
-		<script src="/app.js" type="module"></script>
+		<script>
+document.getElementById('sendToKindleForm').addEventListener('submit', function (e) {
+	e.preventDefault();
+
+	const url = document.getElementById('url').value;
+	const kindleEmail = document.getElementById('kindle-email').value;
+	const messageDiv = document.getElementById('message');
+	const messageText = document.getElementById('messageText');
+	const submitButton = document.querySelector('.glass-button');
+
+	messageDiv.className = 'message processing';
+	messageDiv.classList.remove('hidden');
+	messageText.textContent = 'Processing your request...';
+	submitButton.classList.add('loading');
+	submitButton.disabled = true;
+
+	(async function () {
+		try {
+			const response = await fetch('/send', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ url, email: kindleEmail }),
+			});
+
+			if (response.status === 200) {
+				messageDiv.className = 'message success';
+				messageText.textContent = 'Article sent successfully to your Kindle! 📚';
+			} else {
+				throw new Error('Failed to send article to Kindle');
+			}
+		} catch (error) {
+			messageDiv.className = 'message error';
+			messageText.textContent = 'Unable to send article. Please try again.';
+		}
+
+		submitButton.classList.remove('loading');
+		submitButton.disabled = false;
+
+		setTimeout(() => {
+			messageDiv.classList.add('hidden');
+		}, 8000);
+	})();
+});
+
+// Parallax effect for orbs
+document.addEventListener('mousemove', (e) => {
+	const orbs = document.querySelectorAll('.orb');
+	const x = e.clientX / window.innerWidth;
+	const y = e.clientY / window.innerHeight;
+
+	orbs.forEach((orb, index) => {
+		const speed = (index + 1) * 10;
+		const xOffset = (x - 0.5) * speed;
+		const yOffset = (y - 0.5) * speed;
+		orb.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+	});
+});
+		</script>
 	</body>
 </html>
