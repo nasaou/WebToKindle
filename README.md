@@ -2,6 +2,8 @@
 
 Send any web page to your Kindle as a clean PDF. The Worker orchestrates a Cloudflare Browser session to render a page to PDF, caches the result in KV, and can email it via Resend. ✉️🖨️
 
+![alt](/public/image.png)
+
 ## What this project does ✅
 
 - Exposes a POST `/send` endpoint that accepts `{ url, email }`.
