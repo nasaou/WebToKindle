@@ -1,94 +1,95 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web2Kindle - Send Articles to Your Kindle</title>
-    <link rel="stylesheet" href="/styles.css" />
-</head>
-<body>
-    <!-- Animated background -->
-    <div class="gradient-background"></div>
-    
-    <!-- Floating orbs for visual depth -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>WebToKindle - Send Articles to Your Kindle</title>
+		<link rel="stylesheet" href="/styles.css" />
+	</head>
+	<body>
+		<!-- Animated background -->
+		<div class="gradient-background"></div>
 
-    <!-- Main container -->
-    <div class="container">
-        <div class="split-layout">
-            <!-- Left side - Branding -->
-            <div class="branding">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                            <path d="M12 8l4 4-4 4"/>
-                        </svg>
-                    </div>
-                    <div class="logo-text">Web2Kindle</div>
-                </div>
-                
-                <h1 class="brand-title">Send Articles<br/>to Your Kindle</h1>
-                <p class="brand-subtitle">
-                    Transform any web article into a clean, readable format on your Kindle device. 
-                    Simple, fast, and completely free.
-                </p>
-            </div>
+		<!-- Floating orbs for visual depth -->
+		<div class="orb orb-1"></div>
+		<div class="orb orb-2"></div>
+		<div class="orb orb-3"></div>
 
-            <!-- Right side - Glassmorphic form -->
-            <div class="glass-form">
-                <h2 class="form-title">Get Started</h2>
-                <p class="form-subtitle">Enter your article details below</p>
+		<!-- Main container -->
+		<div class="container">
+			<div class="split-layout">
+				<!-- Left side - Branding -->
+				<div class="branding">
+					<div class="logo">
+						<div class="logo-icon">
+							<svg
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+								<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+								<path d="M12 8l4 4-4 4" />
+							</svg>
+						</div>
+						<div class="logo-text">WebTOKindle</div>
+					</div>
 
-                <form id="sendToKindleForm">
-                    <div class="input-group">
-                        <label for="url" class="input-label">Article URL</label>
-                        <input
-                            type="url"
-                            id="url"
-                            class="glass-input"
-                            placeholder="https://example.com/article"
-                            required
-                        />
-                    </div>
+					<h1 class="brand-title">Send Articles<br />to Your Kindle</h1>
+					<p class="brand-subtitle">
+						Transform any web article into a clean, readable format on your Kindle device. Simple, fast, and completely free.
+					</p>
+				</div>
 
-                    <div class="input-group">
-                        <label for="kindle-email" class="input-label">Kindle Email</label>
-                        <input
-                            type="email"
-                            id="kindle-email"
-                            class="glass-input"
-                            placeholder="your-kindle@kindle.com"
-                            required
-                        />
-                        <div class="setup-notice">
-                            ⚠️ First time? Add "onboarding@resend.dev" to your 
-                            <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GX9XLEVV8G4DB28H" target="_blank" rel="noopener noreferrer">
-                                Kindle approved email list
-                            </a>
-                        </div>
-                    </div>
+				<!-- Right side - Glassmorphic form -->
+				<div class="glass-form">
+					<h2 class="form-title">Get Started</h2>
+					<p class="form-subtitle">Enter your article details below</p>
 
-                    <button type="submit" class="glass-button">
-                        Send to Kindle
-                    </button>
-                </form>
+					<form id="sendToKindleForm">
+						<div class="input-group">
+							<label for="url" class="input-label">Article URL</label>
+							<input type="url" id="url" class="glass-input" placeholder="https://example.com/article" required />
+						</div>
 
-                <div id="message" class="message hidden">
-                    <span id="messageText"></span>
-                </div>
-            </div>
-        </div>
-    </div>
+						<div class="input-group">
+							<label for="kindle-email" class="input-label">Kindle Email</label>
+							<input type="email" id="kindle-email" class="glass-input" placeholder="your-kindle@kindle.com" required />
+							<div class="setup-notice">
+								⚠️ First time? Add "onboarding@resend.dev" to your
+								<a
+									href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GX9XLEVV8G4DB28H"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Kindle approved email list
+								</a>
+							</div>
+						</div>
 
-    <!-- Attribution to Cloudflare developers -->
-    <div class="attribution">
-        Built with ❤️ by the <a href="https://developers.cloudflare.com" target="_blank" rel="noopener noreferrer">With the help of the Cloudflare developer community</a>
-    </div>
+						<button type="submit" class="glass-button">Send to Kindle</button>
+					</form>
 
-    <script src="/app.js" type="module"></script>
-</body>
+					<div id="message" class="message hidden">
+						<span id="messageText"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Attribution to Cloudflare developers -->
+		<div class="attribution">
+			Built with ❤️ by the
+			<a href="https://developers.cloudflare.com" target="_blank" rel="noopener noreferrer"
+				>With the help of the Cloudflare developer community</a
+			>
+		</div>
+
+		<script src="/app.js" type="module"></script>
+	</body>
 </html>
