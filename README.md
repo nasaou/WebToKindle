@@ -1,18 +1,17 @@
-Web2Kindle (Cloudflare Workers + Workflows) 📚☁️
-=================================================
+# WebToKindle (Cloudflare Workers + Workflows) 📚☁️
 
 Send any web page to your Kindle as a clean PDF. The Worker orchestrates a Cloudflare Browser session to render a page to PDF, caches the result in KV, and can email it via Resend. ✉️🖨️
 
-What this project does ✅
-----------------------
+## What this project does ✅
+
 - Exposes a POST `/send` endpoint that accepts `{ url, email }`.
 - Starts a Cloudflare Workflow that:
   - Checks KV (`ARTICLE_CACHE`) to see if the page PDF is already cached.
   - If not cached, calls a Durable Object (`BrowserController`) to launch the Cloudflare Browser and render a PDF, then stores it in KV.
   - Logs progress and (optionally) sends the PDF by email.
 
-Tech stack 🧰
----------
+## Tech stack 🧰
+
 - Cloudflare Workers (TypeScript)
 - Cloudflare Workflows (durable execution)
 - Durable Objects (stateful orchestrator for the Browser session)
@@ -21,56 +20,74 @@ Tech stack 🧰
 - Zod (request validation)
 - Resend (optional email delivery)
 
-Quick start (dev) ⚙️
------------------
-1) Install deps
+## Quick start (dev) ⚙️
+
+1. Install deps
+
 ```
 npm i
 ```
-2) Configure secrets (optional, for email)
+
+2. Configure secrets (optional, for email)
+
 ```
 wrangler secret put RESEND_KEY
 wrangler secret put FROM_EMAIL
 ```
-3) Run remote dev (Workflows require Cloudflare’s remote runtime)
+
+3. Run remote dev (Workflows require Cloudflare’s remote runtime)
+
 ```
 wrangler dev --remote
 ```
-4) Call the endpoint
+
+4. Call the endpoint
+
 ```
 curl -X POST http://127.0.0.1:8787/send \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com","email":"your-kindle@kindle.com"}'
 ```
-5) Observe logs
+
+5. Observe logs
+
 ```
 wrangler tail | cat
 ```
 
-Deploy 🚀
-------
+## Deploy 🚀
+
 Durable Objects require a migration. This repo uses SQLite-backed DOs for the Free plan.
+
 - `wrangler.jsonc` includes:
+
 ```
 "durable_objects": { "bindings": [{ "name": "BROWSER_CONTROLLER", "class_name": "BrowserController" }] },
 "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BrowserController"] }]
 ```
+
 Deploy:
+
 ```
 wrangler deploy
 ```
 
-Configuration & bindings 🔗
-------------------------
+## Configuration & bindings 🔗
+
 - Workflows
+
 ```
-"workflows": [{ "name": "web2kindle-starter", "binding": "WORKFLOW", "class_name": "Workflow" }]
+"workflows": [{ "name": "WebToKindle-starter", "binding": "WORKFLOW", "class_name": "Workflow" }]
 ```
+
 - Browser Rendering
+
 ```
 "browser": { "binding": "BROWSER" }
 ```
+
 - KV (preview + prod IDs)
+
 ```
 "kv_namespaces": [{
   "binding": "ARTICLE_CACHE",
@@ -79,14 +96,14 @@ Configuration & bindings 🔗
 }]
 ```
 
-Endpoint 🛣️
---------
+## Endpoint 🛣️
+
 - POST `/send`
   - Body: `{ url: string, email: string }`
   - Returns: Workflow id + status snapshot
 
-Notable implementation details 🧩
-------------------------------
+## Notable implementation details 🧩
+
 - Validation with Zod in `src/index.ts`.
 - Workflow logic in `src/workflow.ts`:
   - Step logs for cache check, render, and send.
@@ -96,9 +113,8 @@ Notable implementation details 🧩
   - Guards CMP clicker (skips if `page.$x` isn’t available in the Cloudflare runtime).
   - Stores PDFs in KV with TTL.
 
+## What I learned building this 📝
 
-What I learned building this 📝
-----------------------------
 - Cloudflare Workflows
   - Defining a workflow inside a Worker via `workflows` with `class_name`.
   - The `--remote` requirement and why `(workflow.not_found)` appears otherwise.
@@ -118,8 +134,8 @@ What I learned building this 📝
 - Migrations & Bindings
   - How config edits (e.g., adding `class_name`, DO migrations) require restarting dev sessions or new deploys.
 
-Project layout (high level) 🗂️
----------------------------
+## Project layout (high level) 🗂️
+
 ```
 public/           # Static UI (form posts to /send)
   index.html
@@ -131,5 +147,3 @@ src/
   browser.ts      # Durable Object for browser session & PDF rendering
   email.ts        # Resend email helper (optional)
 ```
-
-
